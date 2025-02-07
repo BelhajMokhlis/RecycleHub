@@ -21,6 +21,7 @@
     "@ngrx/effects": "^17.2.0",
     "@ngrx/store": "^17.2.0",
     "@ngrx/store-devtools": "^17.2.0",
+    "@tailwindcss/postcss": "^4.0.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
     "rxjs": "~7.8.0",

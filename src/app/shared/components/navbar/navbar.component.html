@@ -1,0 +1,23 @@
+<nav class="container mx-auto px-4 py-4">
+    <div class="flex justify-between items-center">
+      <a routerLink="/" class="text-2xl font-bold text-green-600">RecycleHub</a>
+      <div class="flex items-center space-x-4" >
+        <a routerLink="/requests" *ngIf="currentUser?.role == 'particulier'" class="text-gray-600 hover:text-green-600">Requests</a>
+        <a routerLink="/points" *ngIf="currentUser?.role == 'particulier'" class="text-gray-600 hover:text-green-600">Points</a>
+        <a routerLink="/collection" *ngIf="currentUser?.role == 'collecteur'" class="text-gray-600 hover:text-green-600">Collection</a>
+        <div class="relative">
+          <button class="flex items-center space-x-2">
+            <img [src]="userImage" 
+                 alt="Profile" 
+                 class="w-8 h-8 rounded-full">
+            <span class="text-gray-700">{{currentUser?.firstName}} {{currentUser?.lastName}}</span>
+          </button>
+        </div>
+        <button (click)="logout()"
+        
+                class="px-4 py-2 text-sm text-white bg-red-500 rounded hover:bg-red-600">
+          Logout
+        </button>
+      </div>
+    </div>
+  </nav>
