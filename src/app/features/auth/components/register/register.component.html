@@ -1,0 +1,152 @@
+<div class="min-h-screen flex items-center justify-center" style="background-image: url('https://assets.weforum.org/article/image/responsive_big_webp_uQJBYVrBVPwN_m86U4u81LbA9T-2t_c8JoBw66AqBKI.webp'); background-size: cover; background-position: center;">
+  <div class="bg-white p-8 rounded-3xl shadow-lg max-w-md w-full mx-4">
+    <!-- Title and Subtitle -->
+    <div class="text-center mb-8">
+      <h1 class="text-2xl font-semibold mb-2">Create Account</h1>
+      <p class="text-gray-500">Join us in helping the environment</p>
+    </div>
+
+    <!-- Add this near the top of your form -->
+    <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+      <span class="block sm:inline">{{ errorMessage }}</span>
+    </div>
+
+    <!-- Register Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+
+        <!-- profile image -->
+        <div class="relative flex flex-col items-center ">
+            <img 
+                *ngIf="selectedImage" 
+                [src]="selectedImage" 
+                alt="Profile Image Preview" 
+                class="mt-4 w-32 h-32 object-cover rounded-full"
+            >
+            <input 
+                type="file" 
+                (change)="onFileSelected($event)" 
+                class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" 
+            >
+        </div>
+      <!-- Email -->
+      <div class="relative">
+        <input 
+          type="email" 
+          formControlName="email"
+          [ngClass]="{'border-red-500': (isSubmitted || registerForm.get('email')?.touched) && registerForm.get('email')?.invalid}"
+          class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+          placeholder="Email"
+        >
+        <div *ngIf="(isSubmitted || registerForm.get('email')?.touched) && registerForm.get('email')?.invalid" class="text-red-500 text-sm mt-1">
+          <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</span>
+          <span *ngIf="registerForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="relative">
+        <input 
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          [ngClass]="{'border-red-500': (isSubmitted || registerForm.get('password')?.touched) && registerForm.get('password')?.invalid}"
+          class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+          placeholder="Password"
+        >
+        <div *ngIf="(isSubmitted || registerForm.get('password')?.touched) && registerForm.get('password')?.invalid" class="text-red-500 text-sm mt-1">
+          <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required</span>
+          <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
+        </div>
+      </div>
+
+      <!-- First Name -->
+      <div class="relative">
+        <input 
+          type="text" 
+          formControlName="firstName"
+          [ngClass]="{'border-red-500': (isSubmitted || registerForm.get('firstName')?.touched) && registerForm.get('firstName')?.invalid}"
+          class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+          placeholder="First Name"
+        >
+        <div *ngIf="(isSubmitted || registerForm.get('firstName')?.touched) && registerForm.get('firstName')?.invalid" class="text-red-500 text-sm mt-1">
+          First name is required
+        </div>
+      </div>
+
+      <!-- Last Name -->
+      <div class="relative">
+        <input 
+          type="text" 
+          formControlName="lastName"
+          [ngClass]="{'border-red-500': (isSubmitted || registerForm.get('lastName')?.touched) && registerForm.get('lastName')?.invalid}"
+          class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+          placeholder="Last Name"
+        >
+        <div *ngIf="(isSubmitted || registerForm.get('lastName')?.touched) && registerForm.get('lastName')?.invalid" class="text-red-500 text-sm mt-1">
+          Last name is required
+        </div>
+      </div>
+
+      <!-- ville -->
+      <div class="relative">
+        <select 
+          formControlName="ville"
+          name="ville" 
+          id="ville" 
+          [ngClass]="{'border-red-500': (isSubmitted || registerForm.get('ville')?.touched) && registerForm.get('ville')?.invalid}"
+          class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+        >
+          <option value="" disabled>Select City</option>
+          <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+        </select>
+        <div *ngIf="(isSubmitted || registerForm.get('ville')?.touched) && registerForm.get('ville')?.invalid" class="text-red-500 text-sm mt-1">
+          City is required
+        </div>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="relative">
+        <input 
+          type="tel" 
+          formControlName="phoneNumber"
+          [ngClass]="{'border-red-500': (isSubmitted || registerForm.get('phoneNumber')?.touched) && registerForm.get('phoneNumber')?.invalid}"
+          class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+          placeholder="Phone Number"
+        >
+        <div *ngIf="(isSubmitted || registerForm.get('phoneNumber')?.touched) && registerForm.get('phoneNumber')?.invalid" class="text-red-500 text-sm mt-1">
+          Phone number is required
+        </div>
+      </div>
+
+      <!-- Birth Date -->
+      <div class="relative">
+        <input 
+          type="date" 
+          formControlName="birthDate"
+          [ngClass]="{'border-red-500': (isSubmitted || registerForm.get('birthDate')?.touched) && registerForm.get('birthDate')?.invalid}"
+          class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+        >
+        <div *ngIf="(isSubmitted || registerForm.get('birthDate')?.touched) && registerForm.get('birthDate')?.invalid" class="text-red-500 text-sm mt-1">
+          Birth date is required
+        </div>
+      </div>
+
+     
+
+      <!-- Submit Button -->
+      <button 
+        type="submit"
+        class="w-full py-3 px-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors"
+      >
+        Create Account
+      </button>
+    </form>
+
+    <!-- Login Link -->
+    <div class="text-center mt-4">
+      <p class="text-sm text-gray-500">
+        Already have an account? 
+        <a [routerLink]="['/login']" class="text-blue-500 hover:underline cursor-pointer">Sign in</a>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+// Custom styles for form validation
+.ng-touched.ng-invalid {
+  @apply border-red-500 focus:border-red-500 focus:ring-red-200;
+}
+
+// Custom styles for social login buttons
+.social-button {
+  img {
+    @apply w-6 h-6 object-contain;
+  }
+  
+  &:hover {
+    @apply bg-gray-50;
+  }
+}
+
+// Animation for password visibility toggle
+.password-toggle {
+  @apply transition-transform duration-200;
+  
+  &:hover {
+    @apply transform scale-110;
+  }
+}
