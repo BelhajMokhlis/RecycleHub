@@ -104,7 +104,11 @@ export class AuthService {
   async getCurrentUser(): Promise<User | null> {
     await this.indexedDB.initDB(); // Ensure DB is initialized before querying
     const users = await this.indexedDB.getAllUsers();
-    return users.find(user => user.isActive) || null;
+    const user = users.find(user => user.isActive) || null;
+    if (user) {
+      user.imageUrl = await this.getUserImage(user.id);
+    }
+    return user;
   }
 
   async isLoggedIn(): Promise<boolean> {

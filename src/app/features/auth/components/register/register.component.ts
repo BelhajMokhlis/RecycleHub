@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User, UserRole } from '../../../../core/models/user.model';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth/auth.service';
-import { HttpClientModule } from '@angular/common/http';
 import { UserImage } from '../../../../core/models/UserImage.model';
 
 interface CityResponse {
@@ -18,15 +16,8 @@ interface CityResponse {
 
 @Component({
   selector: 'app-register',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    HttpClientModule
-  ],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
