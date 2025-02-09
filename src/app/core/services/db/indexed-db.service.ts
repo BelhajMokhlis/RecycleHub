@@ -182,6 +182,7 @@ export class IndexedDBService {
       };
 
       request.onerror = () => {
+        console.error('Error deleting data:', request.error);
         reject(request.error);
       };
     });
@@ -242,12 +243,20 @@ export class IndexedDBService {
 
   // Add this method to the IndexedDBService class
   public async updateUser(user: User, updates: Partial<User>): Promise<void> {
-   
-    if (user) {
-      const updatedUser = { ...user, ...updates };
-      return this.update(this.STORES.USERS, user.email, updatedUser);
+    try {
+      const updatedUser = { 
+        ...user, 
+        ...updates, 
+        updatedAt: new Date().toISOString(),
+        // Make sure we keep the id as it's our key
+        id: user.id 
+      };
+      
+      return this.update(this.STORES.USERS, user.id, updatedUser);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
     }
-    throw new Error('User not found');
   }
 
   public async getDataCount(): Promise<number> {
@@ -258,7 +267,6 @@ export class IndexedDBService {
   public async getUserImage(userId: string): Promise<UserImage | null> {
     try {
       await this.waitForConnection();
-      console.log('Fetching image for user:', userId);
       
       const transaction = this.db!.transaction(this.STORES.USER_IMAGES, 'readonly');
       const store = transaction.objectStore(this.STORES.USER_IMAGES);
@@ -267,7 +275,6 @@ export class IndexedDBService {
         const request = store.get(userId); // Use userId as the key since that's how we stored it
         
         request.onsuccess = () => {
-          console.log('Image fetch result:', request.result);
           resolve(request.result);
         };
         
@@ -299,7 +306,9 @@ export class IndexedDBService {
         
         // Create object stores if they don't exist
         if (!db.objectStoreNames.contains('users')) {
-          db.createObjectStore('users', { keyPath: 'id' });
+          const userStore = db.createObjectStore('users', { keyPath: 'id' });
+          userStore.createIndex('email', 'email', { unique: true });
+          userStore.createIndex('isActive', 'isActive');
         }
         if (!db.objectStoreNames.contains('userImages')) {
           db.createObjectStore('userImages', { keyPath: 'userId' });
@@ -307,4 +316,41 @@ export class IndexedDBService {
       };
     });
   }
+
+  public async updateUserImage(userImage: UserImage): Promise<void> {
+    try {
+      console.log('Attempting to update user image:', userImage.id);
+      const transaction = this.db!.transaction(this.STORES.USER_IMAGES, 'readwrite');
+      const store = transaction.objectStore(this.STORES.USER_IMAGES);
+      
+      return new Promise((resolve, reject) => {
+        const request = store.put(userImage); // put will update if exists, add if doesn't
+        request.onsuccess = () => {
+          console.log('Image updated successfully');
+          resolve();
+        };
+        request.onerror = () => {
+          console.error('Error updating image:', request.error);
+          reject(request.error);
+        };
+      });
+    } catch (error) {
+      console.error('Error in updateUserImage:', error);
+      throw error;
+    }
+  }
+
+
+  public async getCurrentUser(): Promise<User | null> {
+    // current user is the user hase isActive true
+    
+    const users = await this.getAllUsers();
+    const user: User | null = users.find(user => user.isActive) || null;
+    if (user) {
+      user.imageUrl = (await this.getUserImage(user.id))?.data || undefined;
+    }
+    return user;
+  } 
+
+
 }

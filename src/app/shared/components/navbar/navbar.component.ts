@@ -1,38 +1,79 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { selectProfileUser } from '../../../features/profil/store/profile.selectors';
 import { User } from '../../../core/models/user.model';
+import { Subscription } from 'rxjs';
+import { ProfileState } from '../../../features/profil/store/profile.reducer';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { Router } from '@angular/router';
+import { IndexedDBService } from '../../../core/services/db/indexed-db.service';
 
 @Component({
-  selector: 'home-navbar',
+  selector: 'app-navbar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
-  userImage: string | null = null;
-  
-  constructor(private authService: AuthService) {
-    this.authService.getCurrentUser().then(user => {
-      this.currentUser = user;
-      if (this.currentUser) {
-        this.authService.getUserImage(this.currentUser.id)
-          .then(imageUrl => {
-            this.userImage = imageUrl;
-            console.log(this.userImage + 'userImage');
-          })
-          .catch(() => {
-            this.userImage = '/assets/image/user-avatar.png';
-          });
-      } else {
-        this.userImage = '/assets/image/user-avatar.png';
-        console.log(this.userImage);
+  private userSubscription: Subscription | null = null;
+  isMenuOpen = false;
+
+  constructor(
+    private store: Store<{ profile: ProfileState }>,
+    private authService: AuthService,
+    private indexedDBService: IndexedDBService,
+    private router: Router
+  ) {}
+
+  async ngOnInit() {
+    // Use store subscription to keep UI in sync with state
+    this.userSubscription = this.store.select(selectProfileUser)
+      .subscribe(user => {
+        this.currentUser = user;
+      });
+
+    try {
+      // Wait for DB to be initialized
+      await this.indexedDBService.waitForConnection();
+      // Initial load of current user
+      const user = await this.indexedDBService.getCurrentUser();
+      if (user) {
+        this.store.dispatch({ type: '[Profile] Update Profile Success', user });
       }
-    });
+    } catch (error) {
+      console.error('Error initializing database:', error);
+    }
   }
 
-  logout(): void {
-    this.authService.logout();
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
+  async logout() {
+    try {
+      await this.indexedDBService.waitForConnection();
+      const currentUser = await this.indexedDBService.getCurrentUser();
+      if (currentUser) {
+        await this.indexedDBService.updateUser(currentUser, {
+          isActive: false,
+          updatedAt: new Date().toISOString()
+        });
+        this.router.navigate(['/login']);
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Still navigate to login in case of error
+      this.router.navigate(['/login']);
+    }
+  }
 
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
 }

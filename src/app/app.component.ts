@@ -1,17 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
+import { CommonModule } from '@angular/common';
 import { IndexedDBService } from './core/services/db/indexed-db.service';
 import { User, UserRole } from './core/models/user.model';
 import { CollectionRequest, CollectionRequestStatus } from './core/models/CollectionRequest.model';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
-  templateUrl:'./app.component.html',
+  templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'RecycleHub';
 
-  constructor(private indexedDBService: IndexedDBService) {}
+  isLoggedIn = true; // or however you determine login status
+  
+  constructor(private indexedDBService: IndexedDBService,
+    private router: Router
+  ) {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.isLoggedIn = !(event.url.includes('/login') || event.url.includes('/register'));
+      console.log('isLoggedIn:', this.isLoggedIn);
+    });
+  }
 
   async ngOnInit() {
     this.indexedDBService.waitForConnection()

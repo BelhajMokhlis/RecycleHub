@@ -5,11 +5,11 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
 
 @NgModule({
   declarations: [
-    HomeComponent,
-    NavbarComponent
+    HomeComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    NavbarComponent
   ]
 })
 export class HomeModule { } 
