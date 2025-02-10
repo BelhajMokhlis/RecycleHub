@@ -1,0 +1,88 @@
+<div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" (click)="close()">
+  <div class="relative top-20 mx-auto p-5 border max-w-lg w-full shadow-lg rounded-md bg-white" (click)="$event.stopPropagation()">
+    <div class="mt-3">
+      <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Collection Form</h3>
+
+      <!-- image preview -->
+      <div class="mb-4">
+        <img *ngIf="imagePreview" [src]="imagePreview" alt="Image Preview" class="w-full h-48 object-cover rounded-md">
+        <input type="file" (change)="onImageChange($event)" class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+      </div>
+      
+
+      <form [formGroup]="collectionForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <div formArrayName="wasteItems" class="space-y-4">
+
+          <div *ngFor="let item of wasteItems.controls; let i = index" [formGroupName]="i" class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Type:</label>
+            <select formControlName="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <option value="" disabled selected>Sélectionner un type</option>
+              <option value="plastique"> 🥤 Plastique</option>
+              <option value="verre">🍾 Verre</option>
+              <option value="papier">📄 Papier</option>
+              <option value="métal">🥫 Métal</option>
+
+            </select>
+
+            <label class="block text-sm font-medium text-gray-700">Poids estimé (en g):</label>
+            <input  type="number" formControlName="estimatedWeight" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <div *ngIf="item.get('estimatedWeight')?.hasError('notPositive') && item.get('estimatedWeight')?.touched">
+
+
+              <small class="text-red-500">Weight must be greater than 1000g</small>
+            </div>
+          </div>
+
+          <button type="button" (click)="addWasteItem()" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Add Waste Item</button>
+        </div>
+
+        <label class="block text-sm font-medium text-gray-700">Ville:</label>
+        <select formControlName="ville" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <option value="" disabled selected>Sélectionner une ville</option>
+            <option *ngFor="let ville of villes" [value]="ville">{{ ville }}</option>
+        </select>
+
+
+
+
+        <label class="block text-sm font-medium text-gray-700">Adresse de collection:</label>
+        <input formControlName="collectionAddress" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+
+
+        <div formGroupName="preferredDateTime">
+          <label for="date">Date</label>
+          <input id="date" formControlName="date" type="date">
+          <div *ngIf="collectionForm.get('preferredDateTime.date')?.invalid && (collectionForm.get('preferredDateTime.date')?.touched || collectionForm.get('preferredDateTime.date')?.dirty)">
+            <small *ngIf="collectionForm.get('preferredDateTime.date')?.errors?.['required']" class="text-red-500">Date is required.</small>
+            <small *ngIf="collectionForm.get('preferredDateTime.date')?.errors?.['notFutureDate']" class="text-red-500">Date must be in the future.</small>
+
+          </div>
+
+          <label for="timeSlot1">Time Slot 1</label>
+          <input id="timeSlot1" formControlName="timeSlot1" type="time">
+          <div *ngIf="collectionForm.get('preferredDateTime.timeSlot1')?.invalid && (collectionForm.get('preferredDateTime.timeSlot1')?.touched || collectionForm.get('preferredDateTime.timeSlot1')?.dirty)">
+            <small *ngIf="collectionForm.get('preferredDateTime.timeSlot1')?.errors?.['required']" class="text-red-500">Time Slot 1 is required.</small>
+
+          </div>
+
+          <label for="timeSlot2">Time Slot 2</label>
+          <input id="timeSlot2" formControlName="timeSlot2" type="time">
+          <div *ngIf="collectionForm.get('preferredDateTime.timeSlot2')?.invalid && (collectionForm.get('preferredDateTime.timeSlot2')?.touched || collectionForm.get('preferredDateTime.timeSlot2')?.dirty)">
+            <small *ngIf="collectionForm.get('preferredDateTime.timeSlot2')?.errors?.['required']" class="text-red-500">Time Slot 2 is required.</small>   
+
+            <small *ngIf="collectionForm.get('preferredDateTime')?.errors?.['invalidTimeSlot']">Time Slot 1 must be before Time Slot 2.</small>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-5">
+          <button type="button" (click)="close()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Close</button>
+          <button type="submit"
+                  [disabled]="!collectionForm.valid"
+                  class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Save Changes
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

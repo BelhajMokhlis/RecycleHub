@@ -11,9 +11,12 @@ export enum CollectionRequestStatus {
 }
 
 export interface CollectionRequest {
+    id?: string;
     wasteItems: WasteItem[];
+    ville: string;
     collectionAddress: string;
     preferredDateTime: {
+
         date: string; 
         timeSlot: string; 
     };
@@ -24,8 +27,5 @@ export interface CollectionRequest {
     status: CollectionRequestStatus;
 
     particulierId: string;
-
-
-    
 }
 

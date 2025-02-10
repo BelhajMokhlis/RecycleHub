@@ -33,7 +33,7 @@ export class IndexedDBService {
         
         // Users store
         if (!db.objectStoreNames.contains(this.STORES.USERS)) {
-          const userStore = db.createObjectStore(this.STORES.USERS, { keyPath: 'email' });
+          const userStore = db.createObjectStore(this.STORES.USERS, { keyPath: 'id' });
           userStore.createIndex('role', 'role');
         }
 

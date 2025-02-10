@@ -24,7 +24,7 @@ export class AppComponent {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.isLoggedIn = !(event.url.includes('/login') || event.url.includes('/register'));
-      console.log('isLoggedIn:', this.isLoggedIn);
+      // console.log('isLoggedIn:', this.isLoggedIn);
     });
   }
 
@@ -42,12 +42,12 @@ export class AppComponent {
   private addTestData() {
     const collecteur = this.collecteur();
     const particulier = this.particulier();
-    const testRequest = this.createTestCollectionRequest();
+    const testRequests = this.createTestCollectionRequests();
 
     Promise.all([
       this.indexedDBService.addUser(collecteur),
       this.indexedDBService.addUser(particulier),
-      this.indexedDBService.addCollectionRequest(testRequest)
+      ...testRequests.map(request => this.indexedDBService.addCollectionRequest(request))
     ])
       .then(() => {
         console.log('Test data added successfully');
@@ -71,6 +71,8 @@ export class AppComponent {
       role: UserRole.Collecteur,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
+
+
     };
   }
 
@@ -83,28 +85,48 @@ export class AppComponent {
       lastName: 'Doe',
       ville: 'Rabat',
       phoneNumber: '1234567890',
-      isActive: false,
+      isActive: true,
       birthDate: new Date(),
       role: UserRole.Particulier,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
+
     };
   }
 
-  private createTestCollectionRequest(): CollectionRequest {
-    return {
-      wasteItems: [
-        { type: 'plastique', estimatedWeight: 5 },
-        { type: 'verre', estimatedWeight: 3 }
-      ],
-      collectionAddress: '123 Main St',
-      preferredDateTime: {
-        date: '2024-02-10',
-        timeSlot: '10:00-12:00'
+  private createTestCollectionRequests(): CollectionRequest[] {
+    return [
+      {
+        wasteItems: [
+          { type: 'plastique', estimatedWeight: 5 },
+          { type: 'verre', estimatedWeight: 3 }
+        ],
+        collectionAddress: '123 Main St',
+        preferredDateTime: {
+          date: '2024-02-10',
+          timeSlot: '10:00-12:00'
+        },
+        status: CollectionRequestStatus.Pending,
+        particulierId: '2',
+        ville: 'Rabat'
       },
-      status: CollectionRequestStatus.Pending,
-      particulierId: '1'
-    };
+
+      {
+        wasteItems: [
+          { type: 'papier', estimatedWeight: 2 },
+          { type: 'métal', estimatedWeight: 4 }
+        ],
+        collectionAddress: '456 Elm St',
+        preferredDateTime: {
+          date: '2024-02-11',
+          timeSlot: '14:00-16:00'
+        },
+        status: CollectionRequestStatus.Pending,
+        particulierId: '1',
+        ville: 'Rabat'
+      }
+    ];
+
   }
 
   checkDatabaseForData(): Promise<boolean> {

@@ -61,7 +61,7 @@ export class AuthService {
         // Save image to IndexedDB
         image.id = user.id;
         await this.indexedDB.addUserImage(image);
-        console.log("userImage");
+        // console.log("userImage");
       }
       return Promise.resolve();
     } catch (error) {
@@ -71,9 +71,11 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<User> {
     try {
-      const user = await this.indexedDB.getUser(email);
+      const users = await this.indexedDB.getAllUsers();
+      const user = users.find(user => user.email === email);
       console.log(user);
       
+
       if (!user) {
         throw new Error('User not found');
       }
@@ -87,7 +89,7 @@ export class AuthService {
       
       return user;
     } catch (error) {
-      console.log(error +"errorcvfvbhj");
+      console.log(error);
       throw error;
    
     }
@@ -148,7 +150,7 @@ export class AuthService {
       const userImage = await this.indexedDB.getUserImage(userId);
       
       if (!userImage || !userImage.data) {
-        console.log('No image found for user:', userId);
+        // console.log('No image found for user:', userId);
         return '/assets/image/user-avatar.png'; // Return default image path
       }
 

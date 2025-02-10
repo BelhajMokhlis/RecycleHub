@@ -1,1 +1,43 @@
-home works!
+<div class="flex flex-col items-center justify-center" >
+<!-- button to open the collection form modal -->
+<button  [disabled]="!canAddRequest" *ngIf="currentUser?.role === 'particulier'" (click)="openCollectionForm()" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 font-bold ">
+  Ajouter une demande de collecte
+
+</button>
+
+<div *ngIf="!canAddRequest" class="text-red-500 text-center mt-4">
+  Vous ne pouvez pas ajouter une demande de collecte car vous avez déjà 3 demandes en attente ou que le poids total des demandes en attente est supérieur à 10000 g.
+</div>
+
+
+
+<!-- modal for adding a collection request -->
+<div *ngIf="isCollectionFormOpen" class=" inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
+    <div class="modal">
+      <app-collection-form 
+        (closeForm)="closeCollectionForm()"
+        [villes]="ville"
+        [user]="currentUser!"
+        [weight]="totalPendingWeight"
+      ></app-collection-form>
+    </div>
+  </div>
+
+</div>
+
+<div class="flex flex-wrap gap-4 items-center justify-center mt-4">
+  <div *ngFor="let request of collectionRequests">
+    <app-collection-card 
+      [collectionRequest]="request"
+      [user]="getUserForRequest(request.particulierId)"
+      [currentUser]="currentUser"
+      (deleteRequestEvent)="onHomeDeleted()"
+    ></app-collection-card>
+  </div>
+</div>
+
+
+
+
+</div>
