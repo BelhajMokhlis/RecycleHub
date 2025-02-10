@@ -41,8 +41,10 @@
         <span class="text-2xl">&times;</span>
       </button>
       <app-collection-validation
-        [collectionRequest]="selectedCollectionRequest">
+        [collectionRequest]="selectedCollectionRequest"
+        (closeValidationModal)="closeValidationModal()">
       </app-collection-validation>
     </div>
   </div>
+
 </div>

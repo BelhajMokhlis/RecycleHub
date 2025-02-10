@@ -80,16 +80,63 @@
           <!-- Stats section -->
           <div class="grid grid-cols-3 gap-6 mt-8 p-4 bg-gray-50 rounded-lg">
             <div class="text-center p-3 bg-white rounded-lg shadow-sm">
-              <div class="text-2xl md:text-xl font-bold text-blue-600"> 0</div>
+              <div class="text-2xl md:text-xl font-bold text-blue-600">{{collectionRequests.length}}</div>
               <div class="text-sm text-gray-500 mt-1">Collections</div>
             </div>
             <div class="text-center p-3 bg-white rounded-lg shadow-sm">
-              <div class="text-2xl md:text-xl font-bold text-green-600"> 0</div>
+              <div class="text-2xl md:text-xl font-bold text-green-600">{{totalPoints}}</div>
               <div class="text-sm text-gray-500 mt-1">Points</div>
             </div>
             <div class="text-center p-3 bg-white rounded-lg shadow-sm">
-              <div class="text-2xl md:text-xl font-bold text-purple-600"> 0%</div>
+              <div class="text-2xl md:text-xl font-bold text-purple-600">{{completedPercentage}}%</div>
               <div class="text-sm text-gray-500 mt-1">Confirmation</div>
+            </div>
+          </div>
+
+          <!-- Points and Vouchers Section -->
+          <div class="mt-8 p-6 bg-white rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Points & Vouchers</h2>
+            
+            <!-- Points Info -->
+            <div class="mb-6 p-4 bg-blue-50 rounded-lg">
+              <h3 class="font-medium text-blue-900 mb-2">Points per Kilogram:</h3>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="flex items-center space-x-2">
+                  <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                  <span>Plastique: 2 points/kg</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                  <span>Verre: 1 point/kg</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                  <span>Papier: 1 point/kg</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                  <span>Métal: 5 points/kg</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Available Vouchers -->
+            <div class="space-y-4">
+              <h3 class="font-medium text-gray-900">Available Vouchers:</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div *ngFor="let option of VOUCHER_OPTIONS" 
+                     class="p-4 border rounded-lg" 
+                     [class.bg-gray-50]="totalPoints >= option.points"
+                     [class.opacity-50]="totalPoints < option.points">
+                  <div class="text-lg font-semibold text-gray-900">{{option.value}} Dh</div>
+                  <div class="text-sm text-gray-600">{{option.points}} points required</div>
+                  <button (click)="convertToVoucher(option)"
+                          [disabled]="totalPoints < option.points"
+                          class="mt-2 w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Convert to Voucher
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
