@@ -17,6 +17,8 @@ export class HomeComponent {
   ville: string[] = [];
   canAddRequest = true;
   totalPendingWeight = 0;
+  selectedCollectionRequest: CollectionRequest | undefined = undefined;
+  showValidationModal = false;
 
   constructor(private collectionService: CollectionService,
     private indexedDBService: IndexedDBService,
@@ -94,6 +96,16 @@ export class HomeComponent {
   async onHomeDeleted() {
     this.collectionRequests = await this.getCollectionRequestsForUser(this.currentUser?.id || '');
     this.checkCanAddRequest();
+  }
+
+  onChequeRequest(collectionRequest: CollectionRequest): void {
+    this.selectedCollectionRequest = collectionRequest;
+    this.showValidationModal = true;
+  }
+
+  closeValidationModal(): void {
+    this.showValidationModal = false;
+    this.selectedCollectionRequest = undefined;
   }
 }
 

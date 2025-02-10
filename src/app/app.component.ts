@@ -98,8 +98,8 @@ export class AppComponent {
     return [
       {
         wasteItems: [
-          { type: 'plastique', estimatedWeight: 5 },
-          { type: 'verre', estimatedWeight: 3 }
+          { type: 'plastique', estimatedWeight: 3000 },
+          { type: 'verre', estimatedWeight: 3000 }
         ],
         collectionAddress: '123 Main St',
         preferredDateTime: {
@@ -107,16 +107,17 @@ export class AppComponent {
           timeSlot: '10:00-12:00'
         },
         status: CollectionRequestStatus.Pending,
-        particulierId: '2',
+        particulierId: '1',
         ville: 'Rabat'
       },
 
       {
         wasteItems: [
-          { type: 'papier', estimatedWeight: 2 },
-          { type: 'métal', estimatedWeight: 4 }
+          { type: 'papier', estimatedWeight: 1000 },
+          { type: 'métal', estimatedWeight: 1000 }
         ],
         collectionAddress: '456 Elm St',
+
         preferredDateTime: {
           date: '2024-02-11',
           timeSlot: '14:00-16:00'

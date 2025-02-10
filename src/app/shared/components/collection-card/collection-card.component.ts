@@ -13,6 +13,7 @@ import { CollectionService } from '../../../core/services/Collection/collection.
 })
 export class CollectionCardComponent {
   @Output() deleteRequestEvent = new EventEmitter<void>();
+  @Output() chequeRequestEvent = new EventEmitter<CollectionRequest>();
   @Input() collectionRequest!: CollectionRequest;
   @Input() user?: User;
   @Input() currentUser?: User;
@@ -31,6 +32,8 @@ export class CollectionCardComponent {
     console.log(this.user);
   }
   
+
+
 
   get totale(): number {
     return this.collectionRequest.wasteItems.reduce((total, item) => total + item.estimatedWeight, 0);
@@ -52,4 +55,11 @@ export class CollectionCardComponent {
       }
     });
   }
+
+  chequeRequest(): void {
+    console.log('Emitting collection request:', this.collectionRequest);
+    this.chequeRequestEvent.emit(this.collectionRequest);
   }
+
+
+}

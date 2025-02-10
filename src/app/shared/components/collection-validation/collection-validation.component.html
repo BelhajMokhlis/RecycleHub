@@ -1,0 +1,36 @@
+<div class="p-4 bg-white ">
+    <h2 class="text-xl font-semibold mb-4 text-gray-800">Validate Collection Request</h2>
+    
+    <div *ngIf="collectionRequest" class="space-y-6">
+        <!-- Collection Details -->
+        <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+            <h3 class="font-medium mb-2 text-gray-700">Collection Details</h3>
+            <p class="text-sm text-gray-600">Date: {{collectionRequest.preferredDateTime.date}}</p>
+            <p class="text-sm text-gray-600">Time: {{collectionRequest.preferredDateTime.timeSlot}}</p>
+            <p class="text-sm text-gray-600">Location: {{collectionRequest.ville}}, {{collectionRequest.collectionAddress}}</p>
+        </div>
+
+        <!-- Waste Items -->
+        <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+            <h3 class="font-medium mb-2 text-gray-700">Waste Items</h3>
+            <div *ngFor="let item of collectionRequest.wasteItems" class="text-sm text-gray-600">
+                <p>{{item.type}}: {{item.estimatedWeight}}g</p>
+            </div>
+        </div>
+
+        <select [(ngModel)]="status" name="status" id="status" class="block w-full mt-2 p-2 border border-gray-300 rounded-md">
+            <option [value]="CollectionRequestStatus.Pending">Pending</option>
+            <option [value]="CollectionRequestStatus.Accepted">Accepted</option>
+            <option [value]="CollectionRequestStatus.Rejected">Rejected</option>
+            <option [value]="CollectionRequestStatus.Completed">Completed</option>
+        </select>
+
+
+        <!-- Validation Actions -->
+        <div class="flex justify-end space-x-2 mt-4">
+            <button (click)="onSubmit()" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">
+                Submit
+            </button>
+        </div>
+    </div>
+</div>
