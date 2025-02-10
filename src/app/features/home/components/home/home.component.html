@@ -1,43 +1,48 @@
-<div class="flex flex-col items-center justify-center" >
-<!-- button to open the collection form modal -->
-<button  [disabled]="!canAddRequest" *ngIf="currentUser?.role === 'particulier'" (click)="openCollectionForm()" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 font-bold ">
-  Ajouter une demande de collecte
+<div class="flex flex-col items-center justify-center mt-4">
+  <!-- Collection form button and modal -->
+  <button [disabled]="!canAddRequest" *ngIf="currentUser?.role === 'particulier'" (click)="openCollectionForm()" 
+    class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 font-bold">
+    Ajouter une demande de collecte
+  </button>
 
-</button>
+  <div *ngIf="!canAddRequest" class="text-red-500 text-center mt-4">
+    Vous ne pouvez pas ajouter une demande de collecte car vous avez déjà 3 demandes en attente ou que le poids total des demandes en attente est supérieur à 10000 g.
+  </div>
 
-<div *ngIf="!canAddRequest" class="text-red-500 text-center mt-4">
-  Vous ne pouvez pas ajouter une demande de collecte car vous avez déjà 3 demandes en attente ou que le poids total des demandes en attente est supérieur à 10000 g.
-</div>
-
-
-
-<!-- modal for adding a collection request -->
-<div *ngIf="isCollectionFormOpen" class=" inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
-    <div class="modal">
+  <!-- Collection form modal -->
+  <div *ngIf="isCollectionFormOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
       <app-collection-form 
         (closeForm)="closeCollectionForm()"
         [villes]="ville"
         [user]="currentUser!"
-        [weight]="totalPendingWeight"
-      ></app-collection-form>
+        [weight]="totalPendingWeight">
+      </app-collection-form>
     </div>
   </div>
 
-</div>
-
-<div class="flex flex-wrap gap-4 items-center justify-center mt-4">
-  <div *ngFor="let request of collectionRequests">
-    <app-collection-card 
+  <!-- Collection cards grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+    <app-collection-card
+      *ngFor="let request of collectionRequests"
       [collectionRequest]="request"
       [user]="getUserForRequest(request.particulierId)"
       [currentUser]="currentUser"
       (deleteRequestEvent)="onHomeDeleted()"
-    ></app-collection-card>
+      (chequeRequestEvent)="onChequeRequest($event)">
+    </app-collection-card>
   </div>
-</div>
 
-
-
-
+  <!-- Validation Modal -->
+  <div *ngIf="showValidationModal && selectedCollectionRequest && currentUser?.role === 'collecteur'" 
+       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md relative">
+      <button (click)="closeValidationModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+        <span class="text-2xl">&times;</span>
+      </button>
+      <app-collection-validation
+        [collectionRequest]="selectedCollectionRequest">
+      </app-collection-validation>
+    </div>
+  </div>
 </div>

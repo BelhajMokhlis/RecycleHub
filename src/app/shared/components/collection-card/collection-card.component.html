@@ -65,12 +65,10 @@
                 Delete 
             </button>
         </div>
-        <div *ngIf="collectionRequest.status == 'pending' && currentUser?.role === 'collecteur'" class="text-xs text-gray-500 flex gap-2">
-            <button class="bg-blue-500 text-white px-2 py-1 rounded-md">
+        <div *ngIf="collectionRequest.status != 'completed' && currentUser?.role === 'collecteur'" class="text-xs text-gray-500 flex gap-2">
+            <button class="bg-blue-500 text-white px-2 py-1 rounded-md" (click)="chequeRequest()">
                 cheque
             </button>
-
-
         </div>
     </div>
 
