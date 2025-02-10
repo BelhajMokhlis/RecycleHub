@@ -21,6 +21,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   private userSubscription: Subscription | null = null;
   isMenuOpen = false;
+  defaultImage = 'https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg';
+
+
+
 
   constructor(
     private store: Store<{ profile: ProfileState }>,
@@ -35,6 +39,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       .subscribe(user => {
         this.currentUser = user;
       });
+
 
     try {
       // Wait for DB to be initialized
